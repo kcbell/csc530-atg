@@ -1,0 +1,11 @@
+I built this using SpiderMonkey, and the script to run it assumes you've got 
+the SpiderMonkey shell on your path. You can get and build SpiderMonkey pretty
+easily from Mozilla's website (see 
+https://developer.mozilla.org/En/SpiderMonkey/Build_Documentation) but it was
+already installed on my distribution of Fedora.
+
+Anyway, to run the thing, just run one of the following:
+
+getConstraints.sh <filename>     -- outputs variables contained in file
+getConstraints.sh -t             -- run tests in tests.js
+
