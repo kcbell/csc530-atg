@@ -78,9 +78,10 @@ function getConstraintTree(src) {
       case 'UnaryExpression':
          return getTree(node.argument);
       case 'BinaryExpression':
-      case 'AssignmentExpression':
       case 'LogicalExpression':
          return getTree([node.left, node.right]);
+      case 'AssignmentExpression':
+         return {value: node, con: null, alt: null}; // FIXME
       case 'UpdateExpression':
          return getTree(node.argument);
       case 'NewExpression':

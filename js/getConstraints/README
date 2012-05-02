@@ -4,8 +4,10 @@ easily from Mozilla's website (see
 https://developer.mozilla.org/En/SpiderMonkey/Build_Documentation) but it was
 already installed on my distribution of Fedora.
 
-Anyway, to run the thing, just run one of the following:
+Anyway, to run the things, just run one of the following:
 
-getConstraints.sh <filename>     -- outputs variables contained in file
-getConstraints.sh -t             -- run tests in tests.js
+getConstraints.sh <filename>     -- outputs constraints contained in file
+getConstraints.sh -t             -- run tests in getContraintsTests.js
 
+getConstraintTree.sh <filename>  -- outputs constraint tree of file
+getConstraintTree.sh -t          -- run tests in getConstraintTreeTests.js
