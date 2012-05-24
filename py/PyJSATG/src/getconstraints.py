@@ -2,6 +2,9 @@
 Created on May 24, 2012
 
 @author: karl
+
+Loads a JavaScript file from the filesystem and parses it using SpiderMonkey.
+This assumes that the SpiderMonkey interpreter is on your current path as "js".
 '''
 
 import sys
