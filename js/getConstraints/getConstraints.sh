@@ -8,5 +8,5 @@ fi
 if [ $1 == '-t' ]; then
   js -f getConstraints.js -f getConstraintsTests.js
 else
-  js -f getConstraints.js -e "print(getConstraintsFromFile('$1'));"
+  js -f getConstraints.js -e "print(JSON.stringify(getConstraintsFromFile('$1')));"
 fi
