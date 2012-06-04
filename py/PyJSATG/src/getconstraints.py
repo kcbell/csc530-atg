@@ -91,7 +91,7 @@ def solve(pc):
             constraints.append(constraint)
     z3vars = dict()
     for key in variables.iterkeys():
-        z3vars[key] = z3.Int(key) # only ints for now
+        z3vars[key] = z3.Real(key) # only reals for now
     s = z3.Solver()
     for c in constraints:
         z3c = None
