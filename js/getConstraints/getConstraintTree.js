@@ -44,6 +44,7 @@ function getConstraintTree(src) {
          // TODO
          break;
       case 'ReturnStatement':
+	 return {value: node, con: null, alt: null}; // FIXME
       case 'ThrowStatement':
          return getTree(node.argument);
       case 'TryStatement':

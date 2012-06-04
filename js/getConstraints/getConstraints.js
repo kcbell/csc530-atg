@@ -50,6 +50,8 @@ function getConstraints(src) {
          exprs.push(node);
          break;
       case 'ReturnStatement':
+         visit(node.argument);
+	 break;
       case 'ThrowStatement':
          visit(node.argument);
          break;
