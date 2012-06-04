@@ -158,8 +158,8 @@ def main(argv=None):
         except getopt.error, msg:
             raise Usage(msg)
         
-        for opt, val in opts:
-            if opt in ('-h', '--help'):
+        for opt in opts:
+            if opt[0] in ('-h', '--help'):
                 printHelp()
                 return 0
                 
