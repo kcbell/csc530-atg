@@ -7,7 +7,7 @@ function f(x, y, z) {
       if (y < 0) {
          return x * y;
       } else {
-         x = y;
+         x = y + 1;
       }
    } else if (y > 0) {
       return y;

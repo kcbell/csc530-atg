@@ -14,6 +14,7 @@ import z3
 
 from subprocess import check_output
 from collections import deque
+from collections import Hashable
 from copy import deepcopy
 
 class Usage(Exception):
@@ -94,22 +95,7 @@ def solve(pc):
         z3vars[key] = z3.Real(key) # only reals for now
     s = z3.Solver()
     for c in constraints:
-        z3c = None
-        if c['operator'] == '==':
-            z3c = (getvarornumber(z3vars, c['left']) == getvarornumber(z3vars, c['right']))
-        elif c['operator'] == '>':
-            z3c = (getvarornumber(z3vars, c['left']) > getvarornumber(z3vars, c['right']))
-        elif c['operator'] == '>=':
-            z3c = (getvarornumber(z3vars, c['left']) >= getvarornumber(z3vars, c['right']))
-        elif c['operator'] == '<':
-            z3c = (getvarornumber(z3vars, c['left']) < getvarornumber(z3vars, c['right']))
-        elif c['operator'] == '<=':
-            z3c = (getvarornumber(z3vars, c['left']) <= getvarornumber(z3vars, c['right']))
-        elif c['operator'] == '!=':
-            z3c = (getvarornumber(z3vars, c['left']) != getvarornumber(z3vars, c['right']))
-        
-        if not c['true']:
-            z3c = z3.Not(z3c)
+        z3c = getz3c(z3vars, c)
         s.add(z3c)
     ret = dict()
     if s.check() == z3.sat:
@@ -119,8 +105,40 @@ def solve(pc):
             ret[key] = str(val)
     return ret
 
+def getz3c(z3vars, c):
+    z3c = None
+    if c['operator'] == '==' or c['operator'] == '===':
+        z3c = (getvarornumber(z3vars, c['left']) == getvarornumber(z3vars, c['right']))
+    elif c['operator'] == '>':
+        z3c = (getvarornumber(z3vars, c['left']) > getvarornumber(z3vars, c['right']))
+    elif c['operator'] == '>=':
+        z3c = (getvarornumber(z3vars, c['left']) >= getvarornumber(z3vars, c['right']))
+    elif c['operator'] == '<':
+        z3c = (getvarornumber(z3vars, c['left']) < getvarornumber(z3vars, c['right']))
+    elif c['operator'] == '<=':
+        z3c = (getvarornumber(z3vars, c['left']) <= getvarornumber(z3vars, c['right']))
+    elif c['operator'] == '!=':
+        z3c = (getvarornumber(z3vars, c['left']) != getvarornumber(z3vars, c['right']))
+    elif c['operator'] == '+':
+        z3c = (getvarornumber(z3vars, c['left']) + getvarornumber(z3vars, c['right']))
+    elif c['operator'] == '-':
+        z3c = (getvarornumber(z3vars, c['left']) - getvarornumber(z3vars, c['right']))
+    elif c['operator'] == '*':
+        z3c = (getvarornumber(z3vars, c['left']) * getvarornumber(z3vars, c['right']))
+    elif c['operator'] == '/':
+        z3c = (getvarornumber(z3vars, c['left']) / getvarornumber(z3vars, c['right']))
+    elif c['operator'] == '%':
+        z3c = (getvarornumber(z3vars, c['left']) % getvarornumber(z3vars, c['right']))
+    
+    if not c['true']:
+        z3c = z3.Not(z3c)
+    return z3c
+
 def getvarornumber(cons, key):
-    if key in cons:
+    if not isinstance(key, Hashable):
+        # must be binary
+        return getz3c(cons, key)
+    elif key in cons:
         return cons[key]
     else:
         return key
@@ -132,7 +150,7 @@ def buildconstraint(ast, variables, prop = False):
     elif ast['type'] == 'BinaryExpression':
         left = buildconstraint(ast['left'], variables)
         right = buildconstraint(ast['right'], variables)
-        return {'left':left, 'right':right, 'operator':ast['operator'], 'true':ast['true']}
+        return {'left':left, 'right':right, 'operator':ast['operator'], 'true':ast['true'] if 'true' in ast else True}
     elif ast['type'] == 'Literal':
         return ast['value']
     elif ast['type'] == 'Identifier':
